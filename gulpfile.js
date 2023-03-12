@@ -20,28 +20,20 @@ gulp.task('server', function() {
 });
 
 
-// gulp.task('fileinclude', function() {
-//     gulp.src(['src/**/*.html'])
-//         .pipe(fileinclude({
-//             prefix: '@@'
-//         }))
-//         .pipe(gulp.dest('dist/'));
-// });
-
 gulp.task('styles', function() {
-    return gulp.src("src/sass/**/*.+(scss|sass)")
+    return gulp.src("src/styles/**/*.+(scss|sass)")
         .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
         .pipe(rename({ suffix: '.min', prefix: '' }))
         .pipe(autoprefixer())
         .pipe(cleanCSS({ compatibility: 'ie8' }))
-        .pipe(gulp.dest("dist/css"))
+        .pipe(gulp.dest("dist/styles"))
         .pipe(browserSync.stream());
 });
 
 gulp.task('watch', function() {
-    gulp.watch("src/sass/**/*.+(scss|sass|css)", gulp.parallel('styles'));
+    gulp.watch("src/styles/**/*.+(scss|sass|css)", gulp.parallel('styles'));
     gulp.watch("src/**/*.html").on('change',gulp.parallel('html'));
-    gulp.watch("src/js/**/*.js").on('change', gulp.parallel('scripts'));
+    gulp.watch("src/scripts/**/*.js").on('change', gulp.parallel('scripts'));
     gulp.watch("src/fonts/**/*").on('all', gulp.parallel('fonts'));
     gulp.watch("src/icons/**/*").on('all', gulp.parallel('icons'));
     gulp.watch("src/img/**/*").on('all', gulp.parallel('images'));
@@ -58,7 +50,7 @@ gulp.task('html', function() {
 });
 
 gulp.task('scripts', function() {
-    return gulp.src("src/js/**/*.js")
+    return gulp.src("src/scripts/**/*.js")
         .pipe(gulp.dest("dist/js"))
         .pipe(browserSync.stream());
 });
