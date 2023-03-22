@@ -51,7 +51,7 @@ gulp.task('html', function() {
 
 gulp.task('scripts', function() {
     return gulp.src("src/scripts/**/*.js")
-        .pipe(gulp.dest("dist/js"))
+        .pipe(gulp.dest("dist/scripts"))
         .pipe(browserSync.stream());
 });
 
