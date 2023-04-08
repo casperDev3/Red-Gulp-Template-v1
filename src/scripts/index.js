@@ -49,6 +49,7 @@ class Products {
           <div class="product__price">${product.price}</div>
           <button data-mainId="${product.id}" class="product__add-to-cart">Add to cart</button>
           <button data-mainId="${product.id}" class="product__delete-from-cart">Delete from cart</button>
+          <button data-mainId="${product.id}" class="product__delete_one-from-cart">Delete One from cart</button>
         </div>
       `;
     });
@@ -89,17 +90,39 @@ class Cart {
   addAdditionalProduct(product) {
     this.additional_products.push(product);
   }
-  removeMainProduct(product) {
-    // filter if product is not equal to product
-    this.main_products = this.main_products.filter(
-      (item) => item.id !== product.id
-    );
+  removeMainProduct(id) {
     // get order from local storage
     let order = JSON.parse(localStorage.getItem("order"));
     // remove product from order
-    order.main_products = this.main_products;
+    order.main_products = order.main_products.filter((item) => item.id != id);
     // save order to local storage
     localStorage.setItem("order", JSON.stringify(order));
+  }
+  removeOneMainProduct(id) {
+    // get order from local storage
+    let order = JSON.parse(localStorage.getItem("order"));
+    let flag = false;
+
+    // decrease quantity of product
+    order.main_products = order.main_products.map((item) => {
+      if (item.id == id) {
+        if (item.quantity > 1) {
+          item.quantity--;
+        } else {
+          flag = true;
+        }
+      }
+      return item;
+    });
+
+    // remove product from order if quantity is 1
+    if (flag) {
+      order.main_products = order.main_products.filter((item) => item.id != id);
+    }
+
+    // save order to local storage
+    localStorage.setItem("order", JSON.stringify(order));
+    
   }
   removeAdditionalProduct(product) {
     this.additional_products = this.additional_products.filter(
@@ -156,15 +179,17 @@ document.addEventListener("DOMContentLoaded", () => {
   DELETE_BTNS.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const id = e.target.dataset.mainid;
-      const product = products.find((item) => item.id == id);
-      cart.removeMainProduct(product);
+      cart.removeMainProduct(id);
+    });
+  });
+  // 6. Add event listeners on delete one from cart buttons
+  const DELETE_ONE_BTNS = document.querySelectorAll(
+    ".product__delete_one-from-cart"
+  );
+  DELETE_ONE_BTNS.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const id = e.target.dataset.mainid;
+      cart.removeOneMainProduct(id);
     });
   });
 });
-
-// check size screen
-const checkSizeScreen = () => {
-  if (window.innerWidth < 768) {
-    // ...
-  }
-};
